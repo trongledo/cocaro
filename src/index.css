@@ -31,9 +31,39 @@ body {
     text-align: center;
     width: 34px;
   }
+
+  .square.highlight {
+    color: #E62F5A;
+  }
   
   .square:focus {
     outline: none;
+  }
+  
+  .square:hover {
+    background-color: #0AAD77
+  }
+
+  .indicator {
+    float: left;
+    text-align: center;
+    line-height: 33px;
+    width: 33px;
+  }
+
+  button#opt-button {
+    margin-top: 15px;
+    color: #0AAD77;
+    font-size: 13px;
+  }
+
+  .col-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .step:focus {
+    font-weight: bold
   }
   
   .kbd-navigation .square:focus {
