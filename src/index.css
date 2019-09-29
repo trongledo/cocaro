@@ -1,82 +1,87 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
-  }
-  
-  ol, ul {
-    padding-left: 30px;
-  }
-  
-  .board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
-  
-  .status {
-    margin-bottom: 10px;
-  }
-  
-  .square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 34px;
-  }
+  font: 14px 'Century Gothic', Futura, sans-serif;
+  margin: 20px;
+}
 
-  .square.highlight {
-    color: #E62F5A;
-  }
-  
-  .square:focus {
-    outline: none;
-  }
-  
-  .square:hover {
-    background-color: #0AAD77
-  }
+ol,
+ul {
+  padding-left: 30px;
+}
 
-  .indicator {
-    float: left;
-    text-align: center;
-    line-height: 33px;
-    width: 33px;
-  }
+.board-row:after {
+  clear: both;
+  content: '';
+  display: table;
+}
 
-  button#opt-button {
-    margin-top: 15px;
-    color: #0AAD77;
-    font-size: 13px;
-  }
+.status {
+  margin-bottom: 10px;
+}
 
-  .col-reverse {
-    display: flex;
-    flex-direction: column-reverse;
-  }
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
 
-  .step:focus {
-    font-weight: bold
-  }
-  
-  .kbd-navigation .square:focus {
-    background: #ddd;
-  }
-  
-  .game {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .game-info {
-    margin-left: 20px;
-  }
-  
-  
+.square.highlight {
+  color: #e62f5a;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.square:hover {
+  background-color: #0aad77;
+}
+
+.indicator {
+  float: left;
+  text-align: center;
+  line-height: 33px;
+  width: 33px;
+}
+
+button#opt-button {
+  margin-top: 15px;
+  color: #0aad77;
+  font-size: 13px;
+}
+
+button#sel-button {
+  margin-top: 15px;
+  color: #e62f5a;
+  font-size: 13px;
+}
+
+.col-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.step:focus {
+  font-weight: bold;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
