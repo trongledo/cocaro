@@ -18,12 +18,12 @@ function calculateWinner(squares) {
     for (let j = 0; j < BOARDSIZE - 1; j++) {
       if (
         squares[j + i * BOARDSIZE] === squares[j + i * BOARDSIZE + 1] &&
-        squares[j + i * BOARDSIZE] != null
+        squares[j + i * BOARDSIZE] !== null
       ) {
         count++;
         locations.push(j + i * BOARDSIZE);
       } else {
-        if (squares[j + i * BOARDSIZE] != null) {
+        if (squares[j + i * BOARDSIZE] !== null) {
           blocked = true;
         }
         count = 1;
@@ -56,12 +56,12 @@ function calculateWinner(squares) {
       // Check Cols
       if (
         squares[i + j * BOARDSIZE] === squares[i + (j + 1) * BOARDSIZE] &&
-        squares[i + j * BOARDSIZE] != null
+        squares[i + j * BOARDSIZE] !== null
       ) {
         count++;
         locations.push(i + j * BOARDSIZE);
       } else {
-        if (squares[i + j * BOARDSIZE] != null) {
+        if (squares[i + j * BOARDSIZE] !== null) {
           blocked = true;
         }
         count = 1;
@@ -73,7 +73,7 @@ function calculateWinner(squares) {
           blocked === true &&
           squares[i + (j + 1) * BOARDSIZE] !==
             squares[i + (j + 2) * BOARDSIZE] &&
-          squares[j + i * BOARDSIZE + 2] !== null
+          squares[i + (j + 2) * BOARDSIZE] !== null
         ) {
           blocked = false;
           return null;
@@ -95,12 +95,12 @@ function calculateWinner(squares) {
       if (
         squares[i + j * (BOARDSIZE + 1)] ===
           squares[i + (j + 1) * (BOARDSIZE + 1)] &&
-        squares[i + j * (BOARDSIZE + 1)] != null
+        squares[i + j * (BOARDSIZE + 1)] !== null
       ) {
         count++;
         locations.push(i + j * (BOARDSIZE + 1));
       } else {
-        if (squares[i + j * (BOARDSIZE + 1)] != null) {
+        if (squares[i + j * (BOARDSIZE + 1)] !== null) {
           blocked = true;
         }
         count = 1;
@@ -112,7 +112,7 @@ function calculateWinner(squares) {
           blocked === true &&
           squares[i + (j + 1) * (BOARDSIZE + 1)] !==
             squares[i + (j + 2) * (BOARDSIZE + 1)] &&
-          squares[j + i * BOARDSIZE + 2] !== null
+          squares[i + (j + 2) * (BOARDSIZE + 1)] !== null
         ) {
           blocked = false;
           return null;
@@ -151,7 +151,7 @@ function calculateWinner(squares) {
           blocked === true &&
           squares[i + (j + 1) * (BOARDSIZE - 1)] !==
             squares[i + (j + 2) * (BOARDSIZE - 1)] &&
-          squares[j + i * BOARDSIZE + 2] !== null
+          squares[i + (j + 2) * (BOARDSIZE - 1)] !== null
         ) {
           blocked = false;
           return null;

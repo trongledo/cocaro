@@ -1,8 +1,11 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-access-state-in-setstate */
+import { connect } from 'react-redux';
 import React from 'react';
-import Board from './board';
-import calculateWinner from './functions';
+import * as actions from '../actions';
+import Board from './Board';
+import calculateWinner from './Function';
 
 const BOARDSIZE = 20;
 
@@ -10,12 +13,12 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [
-        {
-          squares: Array(BOARDSIZE * BOARDSIZE).fill(null),
-          location: null
-        }
-      ],
+      // history: [
+      //   {
+      //     squares: Array(BOARDSIZE * BOARDSIZE).fill(null),
+      //     location: null
+      //   }
+      // ],
       stepNumber: 0,
       stepReversed: false,
       xIsNext: true
@@ -23,7 +26,10 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = this.props.history.slice(0, this.state.stepNumber + 1);
+    // const history = this.state.history.slice(0, this.state.stepNumber + 1);
+
+    this.props.sliceHistory(history);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
 
@@ -32,13 +38,10 @@ class Game extends React.Component {
     }
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+    this.props.updateHistory(squares, i);
+
     this.setState({
-      history: history.concat([
-        {
-          squares,
-          location: i
-        }
-      ]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
     });
@@ -58,7 +61,8 @@ class Game extends React.Component {
   }
 
   render() {
-    const { history } = this.state;
+    const { history } = this.props;
+    // const { history } = this.state;
     const current = history[this.state.stepNumber];
     const checkWinner = calculateWinner(current.squares);
     let winnerLocation = [];
@@ -128,4 +132,24 @@ class Game extends React.Component {
   }
 }
 
-export default Game;
+const mapStateToProps = state => {
+  return {
+    history: state.history
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateHistory: (squares, index) => {
+      dispatch(actions.updateHistory(squares, index));
+    },
+    sliceHistory: history => {
+      dispatch(actions.sliceHistory(history));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Game);
