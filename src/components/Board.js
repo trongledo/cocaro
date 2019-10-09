@@ -1,16 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/destructuring-assignment */
 import React from 'react';
+import Square from './Square';
 
 const BOARDSIZE = 20;
-
-function Square(props) {
-  return (
-    <button type="button" className={props.className} onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-}
 
 class Board extends React.Component {
   renderSquare(i) {

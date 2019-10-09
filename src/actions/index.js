@@ -14,3 +14,18 @@ export const sliceHistory = history => {
     history
   };
 };
+
+export const updateStep = (stepNumber, xIsNext) => {
+  return {
+    type: 'UPDATE_STEP',
+    stepNumber,
+    xIsNext
+  };
+};
+
+export const reverseStep = stepReversed => {
+  return {
+    type: 'REVERSE_STEP',
+    stepReversed
+  };
+};

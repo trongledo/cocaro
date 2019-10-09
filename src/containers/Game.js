@@ -4,32 +4,16 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import * as actions from '../actions';
-import Board from './Board';
-import calculateWinner from './Function';
+import Board from '../components/Board';
+import calculateWinner from '../components/Function';
 
 const BOARDSIZE = 20;
 
 class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // history: [
-      //   {
-      //     squares: Array(BOARDSIZE * BOARDSIZE).fill(null),
-      //     location: null
-      //   }
-      // ],
-      stepNumber: 0,
-      stepReversed: false,
-      xIsNext: true
-    };
-  }
-
   handleClick(i) {
-    const history = this.props.history.slice(0, this.state.stepNumber + 1);
-    // const history = this.state.history.slice(0, this.state.stepNumber + 1);
-
+    const history = this.props.history.slice(0, this.props.step.stepNumber + 1);
     this.props.sliceHistory(history);
+
     const current = history[history.length - 1];
     const squares = current.squares.slice();
 
@@ -37,38 +21,28 @@ class Game extends React.Component {
       return;
     }
 
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = this.props.step.xIsNext ? 'X' : 'O';
 
     this.props.updateHistory(squares, i);
-
-    this.setState({
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
-    });
+    this.props.updateStep(history.length, !this.props.step.xIsNext);
   }
 
   jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: step % 2 === 0
-    });
+    this.props.updateStep(step, step % 2 === 0);
   }
 
   reverseOrder() {
-    this.setState({
-      stepReversed: !this.state.stepReversed
-    });
+    this.props.reverseStep(this.props.step.stepReversed);
   }
 
   render() {
     const { history } = this.props;
-    // const { history } = this.state;
-    const current = history[this.state.stepNumber];
+    const current = history[this.props.step.stepNumber];
     const checkWinner = calculateWinner(current.squares);
     let winnerLocation = [];
     let winner = null;
 
-    const className = this.state.stepReversed ? 'col-reverse' : '';
+    const className = this.props.step.stepReversed ? 'col-reverse' : '';
 
     const moves = history.map((step, move) => {
       const xCoord = String.fromCharCode((step.location % BOARDSIZE) + 65);
@@ -95,7 +69,7 @@ class Game extends React.Component {
       status = `Winner: ${winner}`;
       winnerLocation = checkWinner.locations;
     } else {
-      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+      status = `Next player: ${this.props.step.xIsNext ? 'X' : 'O'}`;
     }
 
     return (
@@ -134,7 +108,8 @@ class Game extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    history: state.history
+    history: state.history,
+    step: state.step
   };
 };
 
@@ -145,6 +120,12 @@ const mapDispatchToProps = dispatch => {
     },
     sliceHistory: history => {
       dispatch(actions.sliceHistory(history));
+    },
+    updateStep: (stepNumber, xIsNext) => {
+      dispatch(actions.updateStep(stepNumber, xIsNext));
+    },
+    reverseStep: stepReversed => {
+      dispatch(actions.reverseStep(stepReversed));
     }
   };
 };
