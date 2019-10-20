@@ -15,9 +15,9 @@ export const sliceHistory = history => {
   };
 };
 
-export const updateStep = (stepNumber, xIsNext) => {
+export const jumpTo = (stepNumber, xIsNext) => {
   return {
-    type: 'UPDATE_STEP',
+    type: 'JUMP_TO',
     stepNumber,
     xIsNext
   };
@@ -29,3 +29,10 @@ export const reverseStep = stepReversed => {
     stepReversed
   };
 };
+
+// export const handleClick = i => {
+//   return {
+//     type: 'HANDLE_CLICK',
+//     i
+//   };
+// };

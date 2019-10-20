@@ -7,11 +7,11 @@ const stepInit = {
 
 const stepReducer = (state = stepInit, action) => {
   switch (action.type) {
-    case 'UPDATE_STEP':
+    case 'JUMP_TO':
       return {
         ...state,
         stepNumber: action.stepNumber,
-        xIsNext: !state.xIsNext
+        xIsNext: action.stepNumber % 2 === 0
       };
     case 'REVERSE_STEP':
       return {

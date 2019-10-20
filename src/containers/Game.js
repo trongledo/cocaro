@@ -24,15 +24,7 @@ class Game extends React.Component {
     squares[i] = this.props.step.xIsNext ? 'X' : 'O';
 
     this.props.updateHistory(squares, i);
-    this.props.updateStep(history.length, !this.props.step.xIsNext);
-  }
-
-  jumpTo(step) {
-    this.props.updateStep(step, step % 2 === 0);
-  }
-
-  reverseOrder() {
-    this.props.reverseStep(this.props.step.stepReversed);
+    this.props.jumpTo(history.length, !this.props.step.xIsNext);
   }
 
   render() {
@@ -55,7 +47,7 @@ class Game extends React.Component {
           <button
             type="button"
             className="step"
-            onClick={() => this.jumpTo(move)}
+            onClick={() => this.props.jumpTo(move, move % 2 === 0)}
           >
             {desc}
           </button>
@@ -87,14 +79,16 @@ class Game extends React.Component {
             <button
               type="button"
               id="sel-button"
-              onClick={() => this.jumpTo(0)}
+              onClick={() => this.props.jumpTo(0, false)}
             >
               Start Over
             </button>
             <button
               type="button"
               id="opt-button"
-              onClick={() => this.reverseOrder()}
+              onClick={() =>
+                this.props.reverseStep(this.props.step.stepReversed)
+              }
             >
               Reverse Order
             </button>
@@ -121,8 +115,8 @@ const mapDispatchToProps = dispatch => {
     sliceHistory: history => {
       dispatch(actions.sliceHistory(history));
     },
-    updateStep: (stepNumber, xIsNext) => {
-      dispatch(actions.updateStep(stepNumber, xIsNext));
+    jumpTo: (stepNumber, xIsNext) => {
+      dispatch(actions.jumpTo(stepNumber, xIsNext));
     },
     reverseStep: stepReversed => {
       dispatch(actions.reverseStep(stepReversed));
