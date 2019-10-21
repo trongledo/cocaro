@@ -1,9 +1,14 @@
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'mdbreact/dist/css/mdb.css';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Game from './containers/Game';
+
+import App from './components/App';
 import allReducers from './reducers';
 
 const store = createStore(
@@ -13,7 +18,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <Game />
+    <App />
   </Provider>,
   document.getElementById('root')
 );

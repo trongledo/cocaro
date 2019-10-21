@@ -39,7 +39,9 @@ class Board extends React.Component {
         <div className="board-row">
           <div className="indicator">::</div>
           {board.map((_row, index) => (
-            <div className="indicator">{String.fromCharCode(65 + index)}</div>
+            <div key={_row} className="indicator">
+              {String.fromCharCode(65 + index)}
+            </div>
           ))}
         </div>
 

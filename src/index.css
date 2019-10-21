@@ -3,6 +3,10 @@ body {
   margin: 20px;
 }
 
+button {
+  margin-right: 2px;
+}
+
 ol,
 ul {
   padding-left: 30px;
@@ -23,6 +27,7 @@ ul {
   border: 1px solid #999;
   float: left;
   font-size: 24px;
+  font-family: sans-serif;
   font-weight: bold;
   line-height: 34px;
   height: 34px;
@@ -34,7 +39,7 @@ ul {
 }
 
 .square.highlight {
-  color: #e62f5a;
+  color: #cc01ff;
 }
 
 .square:focus {
@@ -54,14 +59,33 @@ ul {
 
 button#opt-button {
   margin-top: 15px;
+  margin-bottom: 15px;
   color: #0aad77;
   font-size: 13px;
+  font-family: sans-serif;
 }
 
 button#sel-button {
   margin-top: 15px;
+  margin-bottom: 15px;
   color: #e62f5a;
   font-size: 13px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button#acc-button {
+  margin-bottom: 15px;
+  color: white;
+  border-radius: 20px;
+  height: 40px;
+  width: 90px;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.step {
+  font-size: 12px;
+  font-family: sans-serif;
 }
 
 .col-reverse {
@@ -84,4 +108,43 @@ button#sel-button {
 
 .game-info {
   margin-left: 20px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+
+.user-name {
+  font-size: 20px;
+  margin-right: 50px;
+}
+
+.centered {
+  margin-top: 100px;
+  font-family: sans-serif;
+}
+
+.form-elegant .font-small {
+  font-size: 0.8rem;
+}
+
+.form-elegant .z-depth-1a {
+  -webkit-box-shadow: 0 2px 5px 0 rgba(55, 161, 255, 0.26),
+    0 4px 12px 0 rgba(121, 155, 254, 0.25);
+  box-shadow: 0 2px 5px 0 rgba(55, 161, 255, 0.26),
+    0 4px 12px 0 rgba(121, 155, 254, 0.25);
+}
+
+.form-elegant .z-depth-1-half,
+.form-elegant .btn:hover {
+  -webkit-box-shadow: 0 5px 11px 0 rgba(85, 182, 255, 0.28),
+    0 4px 15px 0 rgba(36, 133, 255, 0.15);
+  box-shadow: 0 5px 11px 0 rgba(85, 182, 255, 0.28),
+    0 4px 15px 0 rgba(36, 133, 255, 0.15);
+}
+
+.rounded-button {
+  border-radius: 25px;
 }

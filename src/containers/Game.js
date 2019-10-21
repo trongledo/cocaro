@@ -3,6 +3,7 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import { connect } from 'react-redux';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import * as actions from '../actions';
 import Board from '../components/Board';
 import calculateWinner from '../components/Function';
@@ -65,35 +66,52 @@ class Game extends React.Component {
     }
 
     return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            squares={current.squares}
-            onClick={i => this.handleClick(i)}
-            winnerLocation={winnerLocation}
-          />
+      <div>
+        <div className="user-info">
+          <div className="user-name">Welcome Username</div>
         </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <div>
-            <button
-              type="button"
-              id="sel-button"
-              onClick={() => this.props.jumpTo(0, false)}
-            >
-              Start Over
-            </button>
-            <button
-              type="button"
-              id="opt-button"
-              onClick={() =>
-                this.props.reverseStep(this.props.step.stepReversed)
-              }
-            >
-              Reverse Order
-            </button>
+        <div className="game">
+          <div className="game-board">
+            <Board
+              squares={current.squares}
+              onClick={i => this.handleClick(i)}
+              winnerLocation={winnerLocation}
+            />
           </div>
-          <ol className={className}>{moves}</ol>
+          <div className="game-info">
+            <div>
+              <Link to="/login">
+                <button className="blue-gradient" id="acc-button" type="button">
+                  LOGIN
+                </button>
+              </Link>
+              <Link to="/register">
+                <button className="blue-gradient" id="acc-button" type="button">
+                  REGISTER
+                </button>
+              </Link>
+            </div>
+            <div>{status}</div>
+            <div>
+              <button
+                type="button"
+                id="sel-button"
+                onClick={() => this.props.jumpTo(0, false)}
+              >
+                Start Over
+              </button>
+              <button
+                type="button"
+                id="opt-button"
+                onClick={() =>
+                  this.props.reverseStep(this.props.step.stepReversed)
+                }
+              >
+                Reverse Order
+              </button>
+            </div>
+            <ol className={className}>{moves}</ol>
+          </div>
         </div>
       </div>
     );

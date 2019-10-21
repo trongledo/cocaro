@@ -3,18 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.11.2",
-    "bootstrap": "^4.3.1",
-    "bootstrap-css-only": "^4.3.1",
-    "mdbreact": "^4.21.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.1.1",
     "redux": "^4.0.4",
-    "redux-starter-kit": "^0.7.0",
-    "typescript": "^3.6.4"
+    "redux-starter-kit": "^0.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -24,21 +19,13 @@
     "precommit": "NODE_ENV=production lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "pretty-quick --staged",
-      "eslint src/ --fix",
-      "git add"
-    ]
+    "*.{js,jsx}": ["pretty-quick --staged", "eslint src/ --fix", "git add"]
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -46,7 +33,6 @@
     ]
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.4.0",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.3.0",
