@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   MDBContainer,
   MDBRow,
@@ -29,7 +30,6 @@ class Login extends Component {
 
   onChangeHandler(e) {
     this.setState({ [e.target.name]: e.target.value });
-    console.log(e.target.value);
   }
 
   onSubmitHandler(e) {
@@ -139,12 +139,11 @@ class Login extends Component {
                     </div>
                   </MDBCardBody>
                   <MDBModalFooter className="mx-5 pt-3 mb-1">
-                    <p className="font-small grey-text d-flex justify-content-end">
-                      Not a member?
-                      <a href="#!" className="blue-text ml-1">
+                    <Link to="/register">
+                      <p className="font-small d-flex justify-content-end blue-text ml-1">
                         Sign Up
-                      </a>
-                    </p>
+                      </p>
+                    </Link>
                   </MDBModalFooter>
                 </MDBCard>
               </MDBCol>

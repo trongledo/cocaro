@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   MDBContainer,
   MDBRow,
@@ -8,7 +9,8 @@ import {
   MDBCard,
   MDBCardBody,
   MDBInput,
-  MDBBtn
+  MDBBtn,
+  MDBModalFooter
 } from 'mdbreact';
 import * as actions from '../../actions';
 
@@ -110,6 +112,13 @@ class Register extends Component {
                       </MDBBtn>
                     </div>
                   </MDBCardBody>
+                  <MDBModalFooter className="mx-5 pt-3 mb-1">
+                    <Link to="/">
+                      <p className="font-small d-flex justify-content-end blue-text ml-1">
+                        Back to Game
+                      </p>
+                    </Link>
+                  </MDBModalFooter>
                 </MDBCard>
               </MDBCol>
             </MDBRow>

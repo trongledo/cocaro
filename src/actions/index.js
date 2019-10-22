@@ -153,10 +153,14 @@ export const registerUser = user => {
     try {
       const newUser = await register(user);
 
+      console.log('newUser');
       console.log(newUser);
-      dispatch(successRegister(newUser));
       if (newUser.newUser) {
+        dispatch(successRegister());
+
         browserHistory.push('/login');
+      } else {
+        dispatch(successRegister(newUser));
       }
     } catch (err) {
       dispatch(failureRegister(err.toString()));
