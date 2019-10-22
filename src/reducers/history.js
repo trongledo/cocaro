@@ -21,27 +21,6 @@ const historyReducer = (state = history, action) => {
           location: action.index
         }
       ];
-    // case 'HANDLE_CLICK':
-    //   history = state.history.slice(0, this.props.step.stepNumber + 1);
-
-    //   this.props.sliceHistory(history);
-
-    //   const current = history[history.length - 1];
-    //   const squares = current.squares.slice();
-
-    //   if (calculateWinner(squares) || squares[action.i]) {
-    //     return [];
-    //   }
-
-    //   squares[action.i] = this.props.step.xIsNext ? 'X' : 'O';
-
-    //   return [
-    //     ...state,
-    //     {
-    //       squares: this.squares,
-    //       location: action.i
-    //     }
-    //   ];
     default:
       return state;
   }

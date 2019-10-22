@@ -1,12 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 import Login from './Authentication/Login';
 import Register from './Authentication/Register';
 import Game from '../containers/Game';
+import browserHistory from '../helpers/history';
 
 function App() {
   return (
-    <Router>
+    <Router history={browserHistory}>
       <div>
         <Switch>
           <Route path="/" exact component={Game} />

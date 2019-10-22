@@ -6,6 +6,8 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "bootstrap": "^4.3.1",
     "bootstrap-css-only": "^4.3.1",
+    "cross-fetch": "^3.0.4",
+    "history": "^4.10.1",
     "mdbreact": "^4.21.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -14,6 +16,7 @@
     "react-scripts": "3.1.1",
     "redux": "^4.0.4",
     "redux-starter-kit": "^0.7.0",
+    "redux-thunk": "^2.3.0",
     "typescript": "^3.6.4"
   },
   "scripts": {

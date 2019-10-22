@@ -83,6 +83,10 @@ button#acc-button {
   font-family: sans-serif;
 }
 
+button#hidden {
+  display: none;
+}
+
 .step {
   font-size: 12px;
   font-family: sans-serif;
@@ -147,4 +151,14 @@ button#acc-button {
 
 .rounded-button {
   border-radius: 25px;
+}
+
+div#hidden {
+  display: none;
+}
+
+.danger-alert {
+  color: #e62f5a;
+  display: flex;
+  justify-content: center;
 }

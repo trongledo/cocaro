@@ -29,6 +29,21 @@ class Game extends React.Component {
   }
 
   render() {
+    const currentUser = this.props.user.user;
+
+    console.log(currentUser);
+    let greeting = 'Welcome';
+    let loginButtonID = 'acc-button';
+    let logoutButtonID = 'hidden';
+    if (currentUser && currentUser.user !== false) {
+      const { token } = currentUser;
+      console.log(token);
+      const { name } = currentUser.user;
+      greeting = `Hi ${name}`;
+      loginButtonID = 'hidden';
+      logoutButtonID = 'acc-button';
+    }
+
     const { history } = this.props;
     const current = history[this.props.step.stepNumber];
     const checkWinner = calculateWinner(current.squares);
@@ -68,7 +83,7 @@ class Game extends React.Component {
     return (
       <div>
         <div className="user-info">
-          <div className="user-name">Welcome Username</div>
+          <div className="user-name">{greeting}</div>
         </div>
         <div className="game">
           <div className="game-board">
@@ -81,15 +96,31 @@ class Game extends React.Component {
           <div className="game-info">
             <div>
               <Link to="/login">
-                <button className="blue-gradient" id="acc-button" type="button">
+                <button
+                  className="blue-gradient"
+                  id={loginButtonID}
+                  type="button"
+                >
                   LOGIN
                 </button>
               </Link>
               <Link to="/register">
-                <button className="blue-gradient" id="acc-button" type="button">
+                <button
+                  className="blue-gradient"
+                  id={loginButtonID}
+                  type="button"
+                >
                   REGISTER
                 </button>
               </Link>
+              <button
+                onClick={() => this.props.logout()}
+                id={logoutButtonID}
+                className="blue-gradient"
+                type="button"
+              >
+                LOGOUT
+              </button>
             </div>
             <div>{status}</div>
             <div>
@@ -121,7 +152,8 @@ class Game extends React.Component {
 const mapStateToProps = state => {
   return {
     history: state.history,
-    step: state.step
+    step: state.step,
+    user: state.authentication
   };
 };
 
@@ -138,6 +170,9 @@ const mapDispatchToProps = dispatch => {
     },
     reverseStep: stepReversed => {
       dispatch(actions.reverseStep(stepReversed));
+    },
+    logout: () => {
+      dispatch(actions.logoutUser());
     }
   };
 };
