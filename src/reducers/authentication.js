@@ -1,5 +1,5 @@
 const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { loggedIn: true, user } : {};
+const initialState = user ? { loggingIn: false, loggedIn: true, user } : {};
 
 const authenticationReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -11,12 +11,15 @@ const authenticationReducer = (state = initialState, action) => {
     case 'LOGIN_SUCCESS':
       return {
         loggedIn: true,
+        loggingIn: false,
         user: action.user
       };
     case 'LOGIN_FAILURE':
       return {};
     case 'LOGOUT':
-      return {};
+      return {
+        loggingIn: false
+      };
     default:
       return state;
   }

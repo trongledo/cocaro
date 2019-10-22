@@ -3,9 +3,9 @@ const registrationReducer = (state = {}, action) => {
     case 'REGISTER_REQUEST':
       return { registering: true };
     case 'REGISTER_SUCCESS':
-      return { user: action.user };
+      return { registering: false, user: action.user };
     case 'REGISTER_FAILURE':
-      return {};
+      return { registering: false };
     default:
       return state;
   }

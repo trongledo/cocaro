@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import LoadingOverlay from 'react-loading-overlay';
 import {
   MDBContainer,
   MDBRow,
@@ -49,6 +50,7 @@ class Register extends Component {
   }
 
   render() {
+    const { registering } = this.props.registration;
     const { user } = this.props.registration;
     const alertID = user ? '' : 'hidden';
     let message = '';
@@ -62,64 +64,84 @@ class Register extends Component {
           <MDBContainer>
             <MDBRow className="justify-content-center">
               <MDBCol md="4">
-                <MDBCard>
-                  <MDBCardBody className="mx-4">
-                    <div className="text-center">
-                      <h3 className="dark-grey-text mb-5">
-                        <strong>Register</strong>
-                      </h3>
-                    </div>
-                    <MDBInput
-                      label="Your name"
-                      group
-                      type="text"
-                      name="name"
-                      validate
-                      value={this.state.name}
-                      onChange={this.onChangeHandler}
-                    />
-                    <MDBInput
-                      label="Your email"
-                      group
-                      type="email"
-                      validate
-                      error="wrong"
-                      name="email"
-                      value={this.state.email}
-                      onChange={this.onChangeHandler}
-                    />
-                    <MDBInput
-                      label="Your password"
-                      group
-                      type="password"
-                      validate
-                      name="password"
-                      containerClass="mb-0"
-                      value={this.state.password}
-                      onChange={this.onChangeHandler}
-                    />
-                    <div id={alertID} className="danger-alert">
-                      {message}
-                    </div>
-                    <div className="text-center mb-3">
-                      <MDBBtn
-                        type="submit"
-                        gradient="blue"
-                        rounded
-                        className="btn-block z-depth-1a rounded-button"
-                      >
-                        Sign up
-                      </MDBBtn>
-                    </div>
-                  </MDBCardBody>
-                  <MDBModalFooter className="mx-5 pt-3 mb-1">
-                    <Link to="/">
-                      <p className="font-small d-flex justify-content-end blue-text ml-1">
-                        Back to Game
-                      </p>
-                    </Link>
-                  </MDBModalFooter>
-                </MDBCard>
+                <LoadingOverlay
+                  active={registering}
+                  spinner
+                  text="Loading your content..."
+                  styles={{
+                    overlay: base => ({
+                      ...base,
+                      background: 'rgba(255, 255, 255, 0.5)',
+                      color: 'black'
+                    }),
+                    spinner: base => ({
+                      ...base,
+                      width: '100px',
+                      '& svg circle': {
+                        stroke: 'rgba(255, 0, 0, 0.5)'
+                      }
+                    })
+                  }}
+                >
+                  <MDBCard>
+                    <MDBCardBody className="mx-4">
+                      <div className="text-center">
+                        <h3 className="dark-grey-text mb-5">
+                          <strong>Register</strong>
+                        </h3>
+                      </div>
+                      <MDBInput
+                        label="Your name"
+                        group
+                        type="text"
+                        name="name"
+                        validate
+                        value={this.state.name}
+                        onChange={this.onChangeHandler}
+                      />
+                      <MDBInput
+                        label="Your email"
+                        group
+                        type="email"
+                        validate
+                        error="wrong"
+                        name="email"
+                        value={this.state.email}
+                        onChange={this.onChangeHandler}
+                      />
+                      <MDBInput
+                        label="Your password"
+                        group
+                        type="password"
+                        validate
+                        name="password"
+                        containerClass="mb-0"
+                        value={this.state.password}
+                        onChange={this.onChangeHandler}
+                      />
+                      <div id={alertID} className="danger-alert">
+                        {message}
+                      </div>
+                      <div className="text-center mb-3">
+                        <MDBBtn
+                          type="submit"
+                          gradient="blue"
+                          rounded
+                          className="btn-block z-depth-1a rounded-button"
+                        >
+                          Sign up
+                        </MDBBtn>
+                      </div>
+                    </MDBCardBody>
+                    <MDBModalFooter className="mx-5 pt-3 mb-1">
+                      <Link to="/">
+                        <p className="font-small d-flex justify-content-end blue-text ml-1">
+                          Back to Game
+                        </p>
+                      </Link>
+                    </MDBModalFooter>
+                  </MDBCard>
+                </LoadingOverlay>
               </MDBCol>
             </MDBRow>
           </MDBContainer>
