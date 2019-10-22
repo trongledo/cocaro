@@ -67,7 +67,7 @@ class Register extends Component {
                 <LoadingOverlay
                   active={registering}
                   spinner
-                  text="Loading your content..."
+                  text="Loading..."
                   styles={{
                     overlay: base => ({
                       ...base,

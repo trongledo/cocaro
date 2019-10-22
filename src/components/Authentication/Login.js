@@ -58,7 +58,7 @@ class Login extends Component {
                 <LoadingOverlay
                   active={loggingIn}
                   spinner
-                  text="Loading your content..."
+                  text="Loading..."
                   styles={{
                     overlay: base => ({
                       ...base,
