@@ -95,17 +95,6 @@ const login = async (email, password) => {
   } catch (err) {
     return err;
   }
-
-  // return fetch(`https://cocaro-api.herokuapp.com/user/login`, requestOptions)
-  //   .then(handleResponse)
-  //   .then(user => {
-  //     // store user details and jwt token in local storage to keep user logged in between page refreshes
-  //     console.log('Thanh cong');
-  //     console.log(user);
-  //     localStorage.setItem('user', JSON.stringify(user));
-
-  //     return user;
-  //   });
 };
 
 const register = async user => {
