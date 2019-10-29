@@ -12,7 +12,7 @@ const BOARDSIZE = 20;
 
 class Game extends React.Component {
   componentDidMount() {
-    this.props.getUser();
+    // this.props.getUser();
   }
 
   handleClick(i) {
@@ -34,7 +34,7 @@ class Game extends React.Component {
 
   logOut() {
     this.props.logout();
-    this.props.getUser();
+    // this.props.getUser();
   }
 
   render() {

@@ -1,5 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
@@ -40,7 +42,46 @@ class Login extends Component {
     this.props.login(email, password);
   }
 
+  // responseFacebook(response) {
+  //   console.log(response);
+  //   console.log('Chay Facebook Login');
+
+  //   const userData = {
+  //     user: {
+  //       email: response.email,
+  //       name: response.name
+  //     },
+  //     token: response.accessToken
+  //   };
+
+  //   this.props.facebookGoogleLogin(userData);
+  // }
+
   render() {
+    const responseGoogle = response => {
+      const userData = {
+        user: {
+          email: response.w3.U3,
+          name: response.w3.ig
+        },
+        token: response.accessToken
+      };
+
+      this.props.facebookGoogleLogin(userData);
+    };
+
+    const responseFacebook = response => {
+      const userData = {
+        user: {
+          email: response.email,
+          name: response.name
+        },
+        token: response.accessToken
+      };
+
+      this.props.facebookGoogleLogin(userData);
+    };
+
     const { loggingIn } = this.props.loggingIn;
     const { user } = this.props.loggingIn;
     const alertID = user ? '' : 'hidden';
@@ -125,18 +166,50 @@ class Login extends Component {
                         or Sign in with:
                       </p>
                       <div className="row my-3 d-flex justify-content-center">
-                        <MDBBtn
-                          type="button"
-                          color="white"
-                          rounded
-                          className="mr-md-3 z-depth-1a rounded-button"
-                        >
-                          <MDBIcon
-                            fab
-                            icon="facebook-f"
-                            className="blue-text text-center"
-                          />
-                        </MDBBtn>
+                        <FacebookLogin
+                          appId="618618855339624"
+                          autoLoad={false}
+                          fields="name,email,picture"
+                          callback={responseFacebook}
+                          render={renderProps => (
+                            <MDBBtn
+                              type="button"
+                              color="white"
+                              onClick={renderProps.onClick}
+                              rounded
+                              className="mr-md-3 z-depth-1a rounded-button"
+                            >
+                              <MDBIcon
+                                fab
+                                icon="facebook-f"
+                                className="blue-text text-center"
+                              />
+                            </MDBBtn>
+                          )}
+                        />
+                        <GoogleLogin
+                          clientId="1047564563759-siampppc8dksd4top74slvl0f82sbg91.apps.googleusercontent.com"
+                          render={renderProps => (
+                            <MDBBtn
+                              type="button"
+                              color="white"
+                              onClick={renderProps.onClick}
+                              rounded
+                              className="z-depth-1a rounded-button"
+                            >
+                              <MDBIcon
+                                fab
+                                icon="google-plus-g"
+                                className="blue-text"
+                              />
+                            </MDBBtn>
+                          )}
+                          buttonText="Login"
+                          onSuccess={responseGoogle}
+                          onFailure={responseGoogle}
+                          cookiePolicy="single_host_origin"
+                        />
+
                         <MDBBtn
                           type="button"
                           color="white"
@@ -144,18 +217,6 @@ class Login extends Component {
                           className="mr-md-3 z-depth-1a rounded-button"
                         >
                           <MDBIcon fab icon="twitter" className="blue-text" />
-                        </MDBBtn>
-                        <MDBBtn
-                          type="button"
-                          color="white"
-                          rounded
-                          className="z-depth-1a rounded-button"
-                        >
-                          <MDBIcon
-                            fab
-                            icon="google-plus-g"
-                            className="blue-text"
-                          />
                         </MDBBtn>
                       </div>
                     </MDBCardBody>
@@ -187,7 +248,8 @@ const mapStateToProps = state => {
 
 const mapActionToProps = {
   login: actions.loginUser,
-  logout: actions.logoutUser
+  logout: actions.logoutUser,
+  facebookGoogleLogin: actions.facebookGoogleLogin
 };
 
 export default connect(

@@ -185,6 +185,20 @@ export const loginUser = (email, password) => {
   };
 };
 
+export const facebookGoogleLogin = user => {
+  return async dispatch => {
+    dispatch(request({ email: user.email }));
+
+    try {
+      localStorage.setItem('user', JSON.stringify(user));
+      dispatch(success(user));
+      browserHistory.push('/');
+    } catch (err) {
+      dispatch(failure(err.toString()));
+    }
+  };
+};
+
 export const getUser = () => {
   return async dispatch => {
     dispatch(requestUser());
@@ -197,7 +211,6 @@ export const getUser = () => {
         // dispatch(failureUser(userInfo));
       }
     } catch (err) {
-      console.log('Vo fail');
       dispatch(failureUser(err.toString()));
     }
   };
