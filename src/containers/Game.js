@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-access-state-in-setstate */
 import { connect } from 'react-redux';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import gomokuAI from 'gomokuai';
 import * as actions from '../actions';
 import Board from '../components/Board';
 import calculateWinner from '../components/Function';
@@ -17,8 +19,8 @@ class Game extends React.Component {
 
   handleClick(i) {
     const history = this.props.history.slice(0, this.props.step.stepNumber + 1);
-    this.props.sliceHistory(history);
 
+    this.props.sliceHistory(history);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
 
@@ -30,6 +32,34 @@ class Game extends React.Component {
 
     this.props.updateHistory(squares, i);
     this.props.jumpTo(history.length, !this.props.step.xIsNext);
+
+    if (this.props.step.versusAI) {
+      const newBoard = squares.map(value => {
+        if (value === 'X') {
+          return 1;
+        }
+        if (value === 'O') {
+          return 2;
+        }
+        return 0;
+      });
+
+      const { x, y } = gomokuAI.bestMove(newBoard, BOARDSIZE);
+
+      if (calculateWinner(squares) || squares[x + y * BOARDSIZE]) {
+        return;
+      }
+
+      // squares[x * y] = this.props.step.xIsNext ? 'X' : 'O';
+      squares[x + y * BOARDSIZE] = this.props.step.xIsNext ? 'O' : 'X';
+      this.props.updateHistory(squares, x * y);
+      this.props.jumpTo(history.length + 1, this.props.step.xIsNext);
+    }
+  }
+
+  handleToggle() {
+    this.props.toggleVersusAI(this.props.step.versusAI);
+    this.props.jumpTo(0, true);
   }
 
   logOut() {
@@ -41,12 +71,17 @@ class Game extends React.Component {
     // const currentUser = this.props.userInfo.user;
     const currentUser = this.props.user.user;
 
-    let greeting = 'Welcome';
+    let greeting = 'Welcome!';
+    let defaultImage =
+      'https://click4m.madhyamam.com/Appresources/images/man.svg';
     let loginButtonID = 'acc-button';
     let logoutButtonID = 'hidden';
     if (currentUser) {
       const { name } = currentUser.user;
-      greeting = `Hi ${name}`;
+      greeting = `Hi ${name}!`;
+      if (currentUser.user.picture) {
+        defaultImage = currentUser.user.picture;
+      }
       loginButtonID = 'hidden';
       logoutButtonID = 'acc-button';
     }
@@ -70,7 +105,12 @@ class Game extends React.Component {
           <button
             type="button"
             className="step"
-            onClick={() => this.props.jumpTo(move, move % 2 === 0)}
+            onClick={() =>
+              this.props.jumpTo(
+                move,
+                move % 2 === 0 || this.props.step.versusAI
+              )
+            }
           >
             {desc}
           </button>
@@ -89,10 +129,13 @@ class Game extends React.Component {
 
     return (
       <div>
-        <div className="user-info">
-          <div className="user-name">{greeting}</div>
-        </div>
         <div className="game">
+          <div className="user-info">
+            <div className="user-name">{greeting}</div>
+            <div className="user-photo">
+              <img src={defaultImage} alt="Profile" />
+            </div>
+          </div>
           <div className="game-board">
             <Board
               squares={current.squares}
@@ -134,7 +177,7 @@ class Game extends React.Component {
               <button
                 type="button"
                 id="sel-button"
-                onClick={() => this.props.jumpTo(0, false)}
+                onClick={() => this.props.jumpTo(0, true)}
               >
                 Start Over
               </button>
@@ -147,6 +190,17 @@ class Game extends React.Component {
               >
                 Reverse Order
               </button>
+            </div>
+            <div className="custom-control custom-switch">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="customSwitches"
+                onClick={() => this.handleToggle()}
+              />
+              <label className="custom-control-label" htmlFor="customSwitches">
+                Versus AI
+              </label>
             </div>
             <ol className={className}>{moves}</ol>
           </div>
@@ -184,6 +238,9 @@ const mapDispatchToProps = dispatch => {
     },
     getUser: () => {
       dispatch(actions.getUser());
+    },
+    toggleVersusAI: versusAI => {
+      dispatch(actions.toggleVersusAI(versusAI));
     }
   };
 };

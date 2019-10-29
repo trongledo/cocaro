@@ -59,10 +59,12 @@ class Login extends Component {
 
   render() {
     const responseGoogle = response => {
+      console.log(response);
       const userData = {
         user: {
           email: response.w3.U3,
-          name: response.w3.ig
+          name: response.w3.ig,
+          picture: response.profileObj.imageUrl
         },
         token: response.accessToken
       };
@@ -71,10 +73,12 @@ class Login extends Component {
     };
 
     const responseFacebook = response => {
+      console.log(response);
       const userData = {
         user: {
           email: response.email,
-          name: response.name
+          name: response.name,
+          picture: response.picture.data.url
         },
         token: response.accessToken
       };

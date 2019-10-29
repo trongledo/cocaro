@@ -2,7 +2,8 @@
 const stepInit = {
   stepNumber: 0,
   stepReversed: false,
-  xIsNext: true
+  xIsNext: true,
+  versusAI: false
 };
 
 const stepReducer = (state = stepInit, action) => {
@@ -11,12 +12,17 @@ const stepReducer = (state = stepInit, action) => {
       return {
         ...state,
         stepNumber: action.stepNumber,
-        xIsNext: action.stepNumber % 2 === 0
+        xIsNext: action.xIsNext
       };
     case 'REVERSE_STEP':
       return {
         ...state,
         stepReversed: !state.stepReversed
+      };
+    case 'VERSUS_AI':
+      return {
+        ...state,
+        versusAI: !state.versusAI
       };
     default:
       return state;

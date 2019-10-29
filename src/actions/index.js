@@ -34,6 +34,13 @@ export const reverseStep = stepReversed => {
   };
 };
 
+export const toggleVersusAI = versusAI => {
+  return {
+    type: 'VERSUS_AI',
+    versusAI
+  };
+};
+
 function request(user) {
   return { type: 'LOGIN_REQUEST', user };
 }

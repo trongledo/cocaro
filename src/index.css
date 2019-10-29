@@ -24,7 +24,7 @@ ul {
 
 .square {
   background: #fff;
-  border: 1px solid #999;
+  border: 1px solid #685d79;
   float: left;
   font-size: 24px;
   font-family: sans-serif;
@@ -36,10 +36,12 @@ ul {
   padding: 0;
   text-align: center;
   width: 34px;
+  border-radius: 4px;
+  color: #475c7a;
 }
 
 .square.highlight {
-  color: #cc01ff;
+  color: #d8737f;
 }
 
 .square:focus {
@@ -47,7 +49,7 @@ ul {
 }
 
 .square:hover {
-  background-color: #0aad77;
+  background-color: #8fb9a8;
 }
 
 .indicator {
@@ -55,6 +57,7 @@ ul {
   text-align: center;
   line-height: 33px;
   width: 33px;
+  color: #fcbb6d;
 }
 
 button#opt-button {
@@ -108,21 +111,46 @@ button#hidden {
 .game {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .game-info {
   margin-left: 20px;
+  width: 200px;
 }
 
 .user-info {
   display: flex;
-  flex-direction: row;
-  margin-bottom: 15px;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  text-align: right;
+}
+
+.game-board {
+  background: white;
+  padding-right: 33px;
+  padding-bottom: 33px;
+  border-radius: 33px;
+  border: 2px solid #685d79;
+  height: min-content;
 }
 
 .user-name {
   font-size: 20px;
-  margin-right: 50px;
+  margin-right: 0px;
+  margin-bottom: 30px;
+}
+
+.user-photo {
+  width: 100px;
+  height: 100px;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 50px;
 }
 
 .centered {
