@@ -147,7 +147,7 @@ class Game extends React.Component {
             <div>
               <Link to="/login">
                 <button
-                  className="blue-gradient"
+                  className="aqua-gradient"
                   id={loginButtonID}
                   type="button"
                 >
@@ -156,7 +156,7 @@ class Game extends React.Component {
               </Link>
               <Link to="/register">
                 <button
-                  className="blue-gradient"
+                  className="aqua-gradient"
                   id={loginButtonID}
                   type="button"
                 >
@@ -166,7 +166,7 @@ class Game extends React.Component {
               <button
                 onClick={() => this.logOut()}
                 id={logoutButtonID}
-                className="blue-gradient"
+                className="aqua-gradient"
                 type="button"
               >
                 LOGOUT
@@ -191,7 +191,7 @@ class Game extends React.Component {
                 Reverse Order
               </button>
             </div>
-            <div className="custom-control custom-switch">
+            <div id="" className="custom-control custom-switch">
               <input
                 type="checkbox"
                 className="custom-control-input"

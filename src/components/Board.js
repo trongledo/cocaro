@@ -8,6 +8,9 @@ const BOARDSIZE = 20;
 class Board extends React.Component {
   renderSquare(i) {
     let className = 'square';
+    if (this.props.squares[i] === 'O') {
+      className = 'square O';
+    }
     for (let index = 0; index < 5; index++) {
       if (i === this.props.winnerLocation[index]) {
         className = 'square highlight';

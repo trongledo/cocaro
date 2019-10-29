@@ -41,6 +41,11 @@ ul {
 }
 
 .square.highlight {
+  background: #fcbb6d;
+  color: #d8737f;
+}
+
+.square.O {
   color: #d8737f;
 }
 
@@ -57,7 +62,7 @@ ul {
   text-align: center;
   line-height: 33px;
   width: 33px;
-  color: #fcbb6d;
+  color: #8fb9a8;
 }
 
 button#opt-button {
@@ -79,6 +84,7 @@ button#sel-button {
 button#acc-button {
   margin-bottom: 15px;
   color: white;
+  /* background: #568ea6; */
   border-radius: 20px;
   height: 40px;
   width: 90px;
