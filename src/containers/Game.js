@@ -11,6 +11,10 @@ import calculateWinner from '../components/Function';
 const BOARDSIZE = 20;
 
 class Game extends React.Component {
+  componentDidMount() {
+    this.props.getUser();
+  }
+
   handleClick(i) {
     const history = this.props.history.slice(0, this.props.step.stepNumber + 1);
     this.props.sliceHistory(history);
@@ -28,16 +32,19 @@ class Game extends React.Component {
     this.props.jumpTo(history.length, !this.props.step.xIsNext);
   }
 
+  logOut() {
+    this.props.logout();
+    this.props.getUser();
+  }
+
   render() {
+    // const currentUser = this.props.userInfo.user;
     const currentUser = this.props.user.user;
 
-    console.log(currentUser);
     let greeting = 'Welcome';
     let loginButtonID = 'acc-button';
     let logoutButtonID = 'hidden';
-    if (currentUser && currentUser.user !== false) {
-      const { token } = currentUser;
-      console.log(token);
+    if (currentUser) {
       const { name } = currentUser.user;
       greeting = `Hi ${name}`;
       loginButtonID = 'hidden';
@@ -114,7 +121,7 @@ class Game extends React.Component {
                 </button>
               </Link>
               <button
-                onClick={() => this.props.logout()}
+                onClick={() => this.logOut()}
                 id={logoutButtonID}
                 className="blue-gradient"
                 type="button"
@@ -153,7 +160,8 @@ const mapStateToProps = state => {
   return {
     history: state.history,
     step: state.step,
-    user: state.authentication
+    user: state.authentication,
+    userInfo: state.userInfo
   };
 };
 
@@ -173,6 +181,9 @@ const mapDispatchToProps = dispatch => {
     },
     logout: () => {
       dispatch(actions.logoutUser());
+    },
+    getUser: () => {
+      dispatch(actions.getUser());
     }
   };
 };
