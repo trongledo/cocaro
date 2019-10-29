@@ -68,6 +68,9 @@ ul {
 button#opt-button {
   margin-top: 15px;
   margin-bottom: 15px;
+  height: 26px;
+  background: white;
+  border-radius: 13px;
   color: #0aad77;
   font-size: 13px;
   font-family: sans-serif;
@@ -76,6 +79,9 @@ button#opt-button {
 button#sel-button {
   margin-top: 15px;
   margin-bottom: 15px;
+  height: 26px;
+  background: white;
+  border-radius: 13px;
   color: #e62f5a;
   font-size: 13px;
   font-family: Arial, Helvetica, sans-serif;
@@ -98,6 +104,9 @@ button#hidden {
 
 .step {
   font-size: 12px;
+  height: 20px;
+  background: white;
+  border-radius: 10px;
   font-family: sans-serif;
 }
 
