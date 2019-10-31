@@ -3,7 +3,8 @@ const stepInit = {
   stepNumber: 0,
   stepReversed: false,
   xIsNext: true,
-  versusAI: false
+  versusAI: false,
+  versusPlayer: false
 };
 
 const stepReducer = (state = stepInit, action) => {
@@ -23,6 +24,12 @@ const stepReducer = (state = stepInit, action) => {
       return {
         ...state,
         versusAI: !state.versusAI
+      };
+    case 'VERSUS_PLAYER':
+      return {
+        ...state,
+        versusPlayer: !state.versusPlayer,
+        versusAI: false
       };
     default:
       return state;

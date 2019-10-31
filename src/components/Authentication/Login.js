@@ -59,7 +59,6 @@ class Login extends Component {
 
   render() {
     const responseGoogle = response => {
-      console.log(response);
       const userData = {
         user: {
           email: response.w3.U3,
@@ -73,7 +72,6 @@ class Login extends Component {
     };
 
     const responseFacebook = response => {
-      console.log(response);
       const userData = {
         user: {
           email: response.email,

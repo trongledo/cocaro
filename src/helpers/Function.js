@@ -103,7 +103,6 @@ function calculateWinner(squares) {
         if (squares[i + j * (BOARDSIZE + 1)] !== null) {
           blocked = true;
         }
-        count = 1;
         locations = [];
       }
       if (count === 5) {

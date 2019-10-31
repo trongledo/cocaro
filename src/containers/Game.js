@@ -6,11 +6,14 @@ import { connect } from 'react-redux';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import gomokuAI from 'gomokuai';
+import socketIOClient from 'socket.io-client';
 import * as actions from '../actions';
 import Board from '../components/Board';
-import calculateWinner from '../components/Function';
+import calculateWinner from '../helpers/Function';
+import Chatbox from '../components/Chatbox';
 
 const BOARDSIZE = 20;
+let socket = null;
 
 class Game extends React.Component {
   componentDidMount() {
@@ -19,7 +22,6 @@ class Game extends React.Component {
 
   handleClick(i) {
     const history = this.props.history.slice(0, this.props.step.stepNumber + 1);
-
     this.props.sliceHistory(history);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -57,9 +59,33 @@ class Game extends React.Component {
     }
   }
 
-  handleToggle() {
+  handleToggleAI() {
     this.props.toggleVersusAI(this.props.step.versusAI);
     this.props.jumpTo(0, true);
+  }
+
+  handleTogglePlayer() {
+    const currentUser = this.props.user.user;
+    this.props.toggleVersusPlayer(this.props.step.versusPlayer);
+
+    if (!this.props.step.versusPlayer) {
+      socket = socketIOClient('http://localhost:4000/');
+      socket.emit(
+        'join',
+        { name: currentUser.user.name, email: currentUser.user.email },
+        error => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+    } else if (socket) {
+      socket.disconnect();
+    }
+    // Xoa quan co tren ban co
+    this.props.jumpTo(0, true);
+    const ncb = document.getElementById('customSwitches');
+    ncb.checked = null;
   }
 
   logOut() {
@@ -76,6 +102,19 @@ class Game extends React.Component {
       'https://click4m.madhyamam.com/Appresources/images/man.svg';
     let loginButtonID = 'acc-button';
     let logoutButtonID = 'hidden';
+    let renderChatbox;
+    let matchClassName = 'hidden';
+    let AIButtonID = '';
+    let findMatchBtnText = 'Find Match';
+    if (this.props.step.versusPlayer) {
+      AIButtonID = 'hidden';
+      findMatchBtnText = 'Cancel';
+      matchClassName = '';
+      renderChatbox = (
+        <Chatbox currentUser={currentUser.user} socket={socket} />
+      );
+    }
+
     if (currentUser) {
       const { name } = currentUser.user;
       greeting = `Hi ${name}!`;
@@ -135,6 +174,22 @@ class Game extends React.Component {
             <div className="user-photo">
               <img src={defaultImage} alt="Profile" />
             </div>
+
+            <div className="d-flex justify-content-center mt-2">
+              <button
+                id={logoutButtonID}
+                className="mdb-color"
+                onClick={() => this.handleTogglePlayer()}
+                type="button"
+              >
+                {findMatchBtnText}
+              </button>
+            </div>
+            <div id={matchClassName}>
+              <div className="d-flex justify-content-center">VS</div>
+              <div className="d-flex justify-content-center">Name</div>
+              <div className="chat-box">{renderChatbox}</div>
+            </div>
           </div>
           <div className="game-board">
             <Board
@@ -146,34 +201,26 @@ class Game extends React.Component {
           <div className="game-info">
             <div>
               <Link to="/login">
-                <button
-                  className="aqua-gradient"
-                  id={loginButtonID}
-                  type="button"
-                >
+                <button className="mdb-color" id={loginButtonID} type="button">
                   LOGIN
                 </button>
               </Link>
               <Link to="/register">
-                <button
-                  className="aqua-gradient"
-                  id={loginButtonID}
-                  type="button"
-                >
+                <button className="mdb-color" id={loginButtonID} type="button">
                   REGISTER
                 </button>
               </Link>
               <button
                 onClick={() => this.logOut()}
                 id={logoutButtonID}
-                className="aqua-gradient"
+                className="mdb-color"
                 type="button"
               >
                 LOGOUT
               </button>
             </div>
             <div>{status}</div>
-            <div>
+            <div id={AIButtonID}>
               <button
                 type="button"
                 id="sel-button"
@@ -191,18 +238,28 @@ class Game extends React.Component {
                 Reverse Order
               </button>
             </div>
-            <div id="" className="custom-control custom-switch">
+            <div id={matchClassName}>
+              <button id="sel-button" type="button">
+                Undo
+              </button>
+              <button id="opt-button" type="button">
+                Surrender
+              </button>
+            </div>
+            <div id={AIButtonID} className="custom-control custom-switch">
               <input
                 type="checkbox"
                 className="custom-control-input"
                 id="customSwitches"
-                onClick={() => this.handleToggle()}
+                onClick={() => this.handleToggleAI()}
               />
               <label className="custom-control-label" htmlFor="customSwitches">
                 Versus AI
               </label>
             </div>
-            <ol className={className}>{moves}</ol>
+            <div id={AIButtonID}>
+              <ol className={className}>{moves}</ol>
+            </div>
           </div>
         </div>
       </div>
@@ -241,6 +298,9 @@ const mapDispatchToProps = dispatch => {
     },
     toggleVersusAI: versusAI => {
       dispatch(actions.toggleVersusAI(versusAI));
+    },
+    toggleVersusPlayer: versusPlayer => {
+      dispatch(actions.toggleVersusPlayer(versusPlayer));
     }
   };
 };

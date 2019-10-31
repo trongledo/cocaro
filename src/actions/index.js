@@ -41,6 +41,13 @@ export const toggleVersusAI = versusAI => {
   };
 };
 
+export const toggleVersusPlayer = versusPlayer => {
+  return {
+    type: 'VERSUS_PLAYER',
+    versusPlayer
+  };
+};
+
 function request(user) {
   return { type: 'LOGIN_REQUEST', user };
 }
