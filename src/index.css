@@ -87,17 +87,6 @@ button#sel-button {
   font-family: sans-serif;
 }
 
-button#undo-button {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  height: 26px;
-  background: white;
-  border-radius: 13px;
-  color: #fcbb6d;
-  font-size: 13px;
-  font-family: sans-serif;
-}
-
 button#acc-button {
   margin-bottom: 15px;
   color: white;
@@ -277,4 +266,16 @@ div#invisible {
 .chat-room .scrollable-chat {
   height: 510px;
   padding-bottom: 15px;
+}
+
+.system-box {
+  background-color: #fcbb6d;
+}
+
+.opponent-box {
+  background-color: #8fb9a8;
+}
+
+.submit-button {
+  background-color: #685d79;
 }

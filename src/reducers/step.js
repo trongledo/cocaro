@@ -4,7 +4,8 @@ const stepInit = {
   stepReversed: false,
   xIsNext: true,
   versusAI: false,
-  versusPlayer: false
+  versusPlayer: false,
+  matchFound: true
 };
 
 const stepReducer = (state = stepInit, action) => {
@@ -30,6 +31,16 @@ const stepReducer = (state = stepInit, action) => {
         ...state,
         versusPlayer: !state.versusPlayer,
         versusAI: false
+      };
+    case 'CHANGE_TURN':
+      return {
+        ...state,
+        playerTurn: action.playerTurn
+      };
+    case 'MATCH_FOUND':
+      return {
+        ...state,
+        matchFound: action.matchFound
       };
     default:
       return state;

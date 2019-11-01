@@ -42,21 +42,6 @@ class Login extends Component {
     this.props.login(email, password);
   }
 
-  // responseFacebook(response) {
-  //   console.log(response);
-  //   console.log('Chay Facebook Login');
-
-  //   const userData = {
-  //     user: {
-  //       email: response.email,
-  //       name: response.name
-  //     },
-  //     token: response.accessToken
-  //   };
-
-  //   this.props.facebookGoogleLogin(userData);
-  // }
-
   render() {
     const responseGoogle = response => {
       const userData = {

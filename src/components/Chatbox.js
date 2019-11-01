@@ -16,8 +16,8 @@ class Chatbox extends React.Component {
   }
 
   componentDidMount = () => {
+    this.scrollToBottom();
     socket = this.props.socket;
-
     socket.on('message', message => {
       const { messages } = this.state;
       this.setState({
@@ -26,9 +26,17 @@ class Chatbox extends React.Component {
     });
   };
 
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   onChangeHandler(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
+  };
 
   sendMessage() {
     if (this.state.message !== '') {
@@ -65,9 +73,15 @@ class Chatbox extends React.Component {
                 </div>
               );
             })}
+            <div
+              style={{ float: 'left', clear: 'both' }}
+              ref={el => {
+                this.messagesEnd = el;
+              }}
+            />
           </MDBListGroup>
         </div>
-        <div className="form-group basic-textarea">
+        <div className=" basic-textarea">
           <textarea
             className="chat-text form-control"
             id=""
@@ -94,9 +108,9 @@ class Chatbox extends React.Component {
 const ChatMessage = ({ message: { user, email, message }, currentUser }) => {
   let color = 'rounded-card';
   if (user === 'admin') {
-    color = 'blue-grey text-white rounded-card';
+    color = 'system-box text-white rounded-card';
   } else if (email !== currentUser.email) {
-    color = 'green lighten-3 text-white rounded-card';
+    color = 'opponent-box lighten-3 text-white rounded-card';
   }
   return (
     <li className="chat-message d-flex mb-2">

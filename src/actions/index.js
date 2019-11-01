@@ -48,6 +48,20 @@ export const toggleVersusPlayer = versusPlayer => {
   };
 };
 
+export const changePlayerTurn = playerTurn => {
+  return {
+    type: 'CHANGE_TURN',
+    playerTurn
+  };
+};
+
+export const changeMatchFound = matchFound => {
+  return {
+    type: 'MATCH_FOUND',
+    matchFound
+  };
+};
+
 function request(user) {
   return { type: 'LOGIN_REQUEST', user };
 }

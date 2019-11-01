@@ -7,6 +7,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import gomokuAI from 'gomokuai';
 import socketIOClient from 'socket.io-client';
+import LoadingOverlay from 'react-loading-overlay';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import * as actions from '../actions';
 import Board from '../components/Board';
 import calculateWinner from '../helpers/Function';
@@ -20,42 +23,92 @@ class Game extends React.Component {
     // this.props.getUser();
   }
 
+  componentDidUpdate() {}
+
+  submit = () => {
+    confirmAlert({
+      title: 'Your opponent requests to undo last step',
+      message: 'Accept request?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            if (this.props.step.playerTurn) {
+              this.submit();
+              this.props.jumpTo(
+                this.props.history.length - 2,
+                !this.props.step.xIsNext
+              );
+              const { history } = this.props;
+              const current = history[history.length - 2];
+              const squares = current.squares.slice();
+              const i = current.location;
+              socket.emit('sendHistory', {
+                squares,
+                i,
+                xIsNext: this.props.step.xIsNext
+              });
+            }
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    });
+  };
+
   handleClick(i) {
-    const history = this.props.history.slice(0, this.props.step.stepNumber + 1);
-    this.props.sliceHistory(history);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    if (this.props.step.playerTurn) {
+      const history = this.props.history.slice(
+        0,
+        this.props.step.stepNumber + 1
+      );
+      this.props.sliceHistory(history);
+      const current = history[history.length - 1];
+      const squares = current.squares.slice();
 
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-
-    squares[i] = this.props.step.xIsNext ? 'X' : 'O';
-
-    this.props.updateHistory(squares, i);
-    this.props.jumpTo(history.length, !this.props.step.xIsNext);
-
-    if (this.props.step.versusAI) {
-      const newBoard = squares.map(value => {
-        if (value === 'X') {
-          return 1;
-        }
-        if (value === 'O') {
-          return 2;
-        }
-        return 0;
-      });
-
-      const { x, y } = gomokuAI.bestMove(newBoard, BOARDSIZE);
-
-      if (calculateWinner(squares) || squares[x + y * BOARDSIZE]) {
+      if (calculateWinner(squares) || squares[i]) {
         return;
       }
 
-      // squares[x * y] = this.props.step.xIsNext ? 'X' : 'O';
-      squares[x + y * BOARDSIZE] = this.props.step.xIsNext ? 'O' : 'X';
-      this.props.updateHistory(squares, x * y);
-      this.props.jumpTo(history.length + 1, this.props.step.xIsNext);
+      squares[i] = this.props.step.xIsNext ? 'X' : 'O';
+
+      this.props.updateHistory(squares, i);
+      this.props.jumpTo(history.length, !this.props.step.xIsNext);
+
+      // Versus AI
+      if (this.props.step.versusAI) {
+        const newBoard = squares.map(value => {
+          if (value === 'X') {
+            return 1;
+          }
+          if (value === 'O') {
+            return 2;
+          }
+          return 0;
+        });
+
+        const { x, y } = gomokuAI.bestMove(newBoard, BOARDSIZE);
+
+        if (calculateWinner(squares) || squares[x + y * BOARDSIZE]) {
+          return;
+        }
+
+        // squares[x * y] = this.props.step.xIsNext ? 'X' : 'O';
+        squares[x + y * BOARDSIZE] = this.props.step.xIsNext ? 'O' : 'X';
+        this.props.updateHistory(squares, x * y);
+        this.props.jumpTo(history.length + 1, this.props.step.xIsNext);
+      }
+
+      // Vesus Player
+      if (this.props.step.versusPlayer) {
+        socket.emit('sendHistory', {
+          squares,
+          i,
+          xIsNext: this.props.step.xIsNext
+        });
+      }
     }
   }
 
@@ -65,11 +118,16 @@ class Game extends React.Component {
   }
 
   handleTogglePlayer() {
-    const currentUser = this.props.user.user;
     this.props.toggleVersusPlayer(this.props.step.versusPlayer);
+    this.props.changePlayerTurn(true);
+    this.props.changeMatchFound(true);
 
     if (!this.props.step.versusPlayer) {
+      this.props.changeMatchFound(false);
+      this.props.changePlayerTurn(false);
       socket = socketIOClient('http://localhost:4000/');
+      const currentUser = this.props.user.user;
+
       socket.emit(
         'join',
         { name: currentUser.user.name, email: currentUser.user.email },
@@ -79,13 +137,42 @@ class Game extends React.Component {
           }
         }
       );
+
+      socket.on('history', ({ squares, i, xIsNext }) => {
+        const history = this.props.history.slice(
+          0,
+          this.props.step.stepNumber + 1
+        );
+        this.props.sliceHistory(history);
+
+        this.props.updateHistory(squares, i);
+        this.props.jumpTo(history.length, !xIsNext);
+        this.props.changePlayerTurn(!this.props.step.playerTurn);
+      });
+
+      socket.on('playerTurn', playerTurn => {
+        this.props.changePlayerTurn(playerTurn);
+      });
+
+      socket.on('undoRequest', undoRequest => {
+        if (undoRequest && this.props.step.playerTurn) {
+          this.submit();
+        }
+      });
     } else if (socket) {
       socket.disconnect();
     }
+
     // Xoa quan co tren ban co
     this.props.jumpTo(0, true);
     const ncb = document.getElementById('customSwitches');
     ncb.checked = null;
+  }
+
+  handlePlayerUndo() {
+    if (!this.props.step.playerTurn) {
+      socket.emit('passUndoRequest', true);
+    }
   }
 
   logOut() {
@@ -108,13 +195,21 @@ class Game extends React.Component {
     let findMatchBtnText = 'Find Match';
     if (this.props.step.versusPlayer) {
       AIButtonID = 'hidden';
-      findMatchBtnText = 'Cancel';
+      findMatchBtnText = 'Leave';
       matchClassName = '';
+
+      socket.on('roomData', ({ users }) => {
+        document.getElementById('user1').innerHTML = `${users[0].name}: (X)`;
+        if (users[1]) {
+          document.getElementById('user2').innerHTML = `${users[1].name}: (O)`;
+          this.props.changeMatchFound(true);
+        }
+      });
+
       renderChatbox = (
         <Chatbox currentUser={currentUser.user} socket={socket} />
       );
     }
-
     if (currentUser) {
       const { name } = currentUser.user;
       greeting = `Hi ${name}!`;
@@ -186,20 +281,56 @@ class Game extends React.Component {
               </button>
             </div>
             <div id={matchClassName}>
-              <div className="d-flex justify-content-center">VS</div>
-              <div className="d-flex justify-content-center">Name</div>
-              <div className="chat-box">{renderChatbox}</div>
+              <LoadingOverlay
+                active={!this.props.step.matchFound}
+                styles={{
+                  overlay: base => ({
+                    ...base,
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    color: 'black'
+                  })
+                }}
+              >
+                <div id="user1" className="d-flex justify-content-center">
+                  Player 1
+                </div>
+                <div className="d-flex justify-content-center">VS</div>
+                <div id="user2" className="d-flex justify-content-center">
+                  Player 2
+                </div>
+                <div className="chat-box">{renderChatbox}</div>
+              </LoadingOverlay>
             </div>
           </div>
-          <div className="game-board">
-            <Board
-              squares={current.squares}
-              onClick={i => this.handleClick(i)}
-              winnerLocation={winnerLocation}
-            />
-          </div>
+          <LoadingOverlay
+            active={!this.props.step.matchFound}
+            spinner
+            text="Finding opponent..."
+            styles={{
+              overlay: base => ({
+                ...base,
+                background: 'rgba(255, 255, 255, 0.5)',
+                color: 'black'
+              }),
+              spinner: base => ({
+                ...base,
+                width: '100px',
+                '& svg circle': {
+                  stroke: 'rgba(255, 0, 0, 0.5)'
+                }
+              })
+            }}
+          >
+            <div className="game-board">
+              <Board
+                squares={current.squares}
+                onClick={i => this.handleClick(i)}
+                winnerLocation={winnerLocation}
+              />
+            </div>
+          </LoadingOverlay>
           <div className="game-info">
-            <div>
+            <div id={AIButtonID}>
               <Link to="/login">
                 <button className="mdb-color" id={loginButtonID} type="button">
                   LOGIN
@@ -239,12 +370,27 @@ class Game extends React.Component {
               </button>
             </div>
             <div id={matchClassName}>
-              <button id="sel-button" type="button">
-                Undo
-              </button>
-              <button id="opt-button" type="button">
-                Surrender
-              </button>
+              <LoadingOverlay
+                active={!this.props.step.matchFound}
+                styles={{
+                  overlay: base => ({
+                    ...base,
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    color: 'black'
+                  })
+                }}
+              >
+                <button
+                  onClick={() => this.handlePlayerUndo()}
+                  id="sel-button"
+                  type="button"
+                >
+                  Undo
+                </button>
+                <button id="opt-button" type="button">
+                  Surrender
+                </button>
+              </LoadingOverlay>
             </div>
             <div id={AIButtonID} className="custom-control custom-switch">
               <input
@@ -301,6 +447,12 @@ const mapDispatchToProps = dispatch => {
     },
     toggleVersusPlayer: versusPlayer => {
       dispatch(actions.toggleVersusPlayer(versusPlayer));
+    },
+    changePlayerTurn: playerTurn => {
+      dispatch(actions.changePlayerTurn(playerTurn));
+    },
+    changeMatchFound: matchFound => {
+      dispatch(actions.changeMatchFound(matchFound));
     }
   };
 };
