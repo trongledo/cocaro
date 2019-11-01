@@ -125,7 +125,7 @@ class Game extends React.Component {
     if (!this.props.step.versusPlayer) {
       this.props.changeMatchFound(false);
       this.props.changePlayerTurn(false);
-      socket = socketIOClient('http://localhost:4000/');
+      socket = socketIOClient('https://cocaro-api.herokuapp.com');
       const currentUser = this.props.user.user;
 
       socket.emit(
