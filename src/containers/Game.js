@@ -27,14 +27,13 @@ class Game extends React.Component {
 
   submit = () => {
     confirmAlert({
-      title: 'Your opponent requests to undo last step',
+      title: 'Your opponent requests to undo',
       message: 'Accept request?',
       buttons: [
         {
           label: 'Yes',
           onClick: () => {
             if (this.props.step.playerTurn) {
-              this.submit();
               this.props.jumpTo(
                 this.props.history.length - 2,
                 !this.props.step.xIsNext

@@ -5,6 +5,7 @@ const stepInit = {
   xIsNext: true,
   versusAI: false,
   versusPlayer: false,
+  playerTurn: true,
   matchFound: true
 };
 
