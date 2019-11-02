@@ -13,7 +13,7 @@ class Board extends React.Component {
     }
     for (let index = 0; index < 5; index++) {
       if (i === this.props.winnerLocation[index]) {
-        className = 'square highlight';
+        className += ' highlight';
       }
     }
     return (

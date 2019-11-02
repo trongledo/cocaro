@@ -169,7 +169,7 @@ class Game extends React.Component {
   }
 
   handlePlayerUndo() {
-    if (!this.props.step.playerTurn) {
+    if (!this.props.step.playerTurn && this.props.step.stepNumber !== 0) {
       socket.emit('passUndoRequest', true);
     }
   }

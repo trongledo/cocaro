@@ -38,6 +38,14 @@ class Chatbox extends React.Component {
     this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
   };
 
+  enterPressed(event) {
+    const code = event.keyCode || event.which;
+    if (code === 13) {
+      this.sendMessage();
+      this.setState({ message: '' });
+    }
+  }
+
   sendMessage() {
     if (this.state.message !== '') {
       socket.emit(
@@ -91,6 +99,7 @@ class Chatbox extends React.Component {
             required
             value={this.state.message}
             onChange={this.onChangeHandler}
+            onKeyDown={this.enterPressed.bind(this)}
           />
           <MDBBtn
             size="sm"
