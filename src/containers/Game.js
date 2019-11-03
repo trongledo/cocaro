@@ -148,7 +148,7 @@ class Game extends React.Component {
       this.props.changeMatchFound(false);
       this.props.changePlayerTurn(false);
       // socket = socketIOClient('https://cocaro-api.herokuapp.com');
-      socket = socketIOClient('http://localhost:4000/');
+      socket = socketIOClient('https://cocaro-api.herokuapp.com');
       const currentUser = this.props.user.user;
 
       socket.emit(
@@ -337,19 +337,38 @@ class Game extends React.Component {
             <div id={matchClassName}>
               <LoadingOverlay
                 active={!this.props.step.matchFound}
+                spinner
                 styles={{
                   overlay: base => ({
                     ...base,
-                    background: 'rgba(255, 255, 255, 0.5)',
+                    background: 'rgba(255, 255, 255, 0)',
                     color: 'black'
+                  }),
+                  spinner: base => ({
+                    ...base,
+                    width: '100px',
+                    '& svg circle': {
+                      stroke: 'rgba(255, 0, 0, 0.5)'
+                    }
                   })
                 }}
               >
-                <div id="user1" className="d-flex justify-content-center">
+                <div
+                  id="user1"
+                  className="mt-2 font-weight-bold h6 d-flex justify-content-center"
+                >
                   Player 1
                 </div>
-                <div className="d-flex justify-content-center">VS</div>
-                <div id="user2" className="d-flex justify-content-center">
+                <div className="versus-photo d-flex justify-content-center">
+                  <img
+                    alt="Versus"
+                    src="https://image.flaticon.com/icons/svg/1732/1732452.svg"
+                  />
+                </div>
+                <div
+                  id="user2"
+                  className="mt-2 mb-4 font-weight-bold h6 d-flex justify-content-center"
+                >
                   Player 2
                 </div>
                 <div className="d-flex justify-content-center player2-photo">
@@ -359,7 +378,6 @@ class Game extends React.Component {
                     id="player2Image"
                   />
                 </div>
-                <div className="chat-box">{renderChatbox}</div>
               </LoadingOverlay>
             </div>
           </div>
@@ -370,7 +388,7 @@ class Game extends React.Component {
             styles={{
               overlay: base => ({
                 ...base,
-                background: 'rgba(255, 255, 255, 0.5)',
+                background: 'rgba(255, 255, 255, 0)',
                 color: 'black'
               }),
               spinner: base => ({
@@ -438,11 +456,19 @@ class Game extends React.Component {
             <div id={matchClassName}>
               <LoadingOverlay
                 active={!this.props.step.matchFound}
+                spinner
                 styles={{
                   overlay: base => ({
                     ...base,
-                    background: 'rgba(255, 255, 255, 0.5)',
+                    background: 'rgba(255, 255, 255, 0)',
                     color: 'black'
+                  }),
+                  spinner: base => ({
+                    ...base,
+                    width: '100px',
+                    '& svg circle': {
+                      stroke: 'rgba(255, 0, 0, 0.5)'
+                    }
                   })
                 }}
               >
@@ -460,6 +486,7 @@ class Game extends React.Component {
                 >
                   Surrender
                 </button>
+                <div className="chat-box">{renderChatbox}</div>
               </LoadingOverlay>
             </div>
             <div id={AIButtonID} className="custom-control custom-switch">
