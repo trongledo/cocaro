@@ -62,6 +62,13 @@ export const changeMatchFound = matchFound => {
   };
 };
 
+export const changeWinnerStatus = winnerStatus => {
+  return {
+    type: 'CHANGE_WINNER_STATUS',
+    winnerStatus
+  };
+};
+
 function request(user) {
   return { type: 'LOGIN_REQUEST', user };
 }

@@ -6,7 +6,8 @@ const stepInit = {
   versusAI: false,
   versusPlayer: false,
   playerTurn: true,
-  matchFound: true
+  matchFound: true,
+  winnerStatus: null
 };
 
 const stepReducer = (state = stepInit, action) => {
@@ -42,6 +43,11 @@ const stepReducer = (state = stepInit, action) => {
       return {
         ...state,
         matchFound: action.matchFound
+      };
+    case 'CHANGE_WINNER_STATUS':
+      return {
+        ...state,
+        winnerStatus: action.winnerStatus
       };
     default:
       return state;

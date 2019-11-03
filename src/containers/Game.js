@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable react/destructuring-assignment */
@@ -25,7 +26,7 @@ class Game extends React.Component {
 
   componentDidUpdate() {}
 
-  submit = () => {
+  submitUndoRequest = () => {
     confirmAlert({
       title: 'Your opponent requests to undo',
       message: 'Accept request?',
@@ -48,6 +49,25 @@ class Game extends React.Component {
                 xIsNext: this.props.step.xIsNext
               });
             }
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    });
+  };
+
+  submitSurrenderRequest = () => {
+    confirmAlert({
+      title: 'Your opponent surrenders',
+      message: 'Accept request?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            console.log(this.props.user.user.user.name);
+            socket.emit('sendWinnerInfo', this.props.user.user.user.name);
           }
         },
         {
@@ -120,16 +140,29 @@ class Game extends React.Component {
     this.props.toggleVersusPlayer(this.props.step.versusPlayer);
     this.props.changePlayerTurn(true);
     this.props.changeMatchFound(true);
+    document.getElementById('user2').innerHTML = 'Player 2';
+    document.getElementById('player2Image').src =
+      'https://click4m.madhyamam.com/Appresources/images/man.svg';
 
     if (!this.props.step.versusPlayer) {
       this.props.changeMatchFound(false);
       this.props.changePlayerTurn(false);
-      socket = socketIOClient('https://cocaro-api.herokuapp.com');
+      // socket = socketIOClient('https://cocaro-api.herokuapp.com');
+      socket = socketIOClient('http://localhost:4000/');
       const currentUser = this.props.user.user;
+      let imageURL =
+        'https://click4m.madhyamam.com/Appresources/images/man.svg';
+      if (currentUser.user.picture) {
+        imageURL = currentUser.user.picture;
+      }
 
       socket.emit(
         'join',
-        { name: currentUser.user.name, email: currentUser.user.email },
+        {
+          name: currentUser.user.name,
+          email: currentUser.user.email,
+          image: imageURL
+        },
         error => {
           if (error) {
             console.log(error);
@@ -152,10 +185,17 @@ class Game extends React.Component {
       socket.on('playerTurn', playerTurn => {
         this.props.changePlayerTurn(playerTurn);
       });
-
+      socket.on('winnerInfo', winnerInfo => {
+        this.props.changeWinnerStatus(winnerInfo);
+      });
       socket.on('undoRequest', undoRequest => {
         if (undoRequest && this.props.step.playerTurn) {
-          this.submit();
+          this.submitUndoRequest();
+        }
+      });
+      socket.on('surrenderRequest', surrenderRequest => {
+        if (this.props.step.playerTurn !== surrenderRequest) {
+          this.submitSurrenderRequest();
         }
       });
     } else if (socket) {
@@ -172,6 +212,10 @@ class Game extends React.Component {
     if (!this.props.step.playerTurn && this.props.step.stepNumber !== 0) {
       socket.emit('passUndoRequest', true);
     }
+  }
+
+  handlePlayerSurrender() {
+    socket.emit('passSurrenderRequest', this.props.step.playerTurn);
   }
 
   logOut() {
@@ -201,6 +245,7 @@ class Game extends React.Component {
         document.getElementById('user1').innerHTML = `${users[0].name}: (X)`;
         if (users[1]) {
           document.getElementById('user2').innerHTML = `${users[1].name}: (O)`;
+          document.getElementById('player2Image').src = users[1].image;
           this.props.changeMatchFound(true);
         }
       });
@@ -259,6 +304,9 @@ class Game extends React.Component {
     } else {
       status = `Next player: ${this.props.step.xIsNext ? 'X' : 'O'}`;
     }
+    if (this.props.step.winnerStatus) {
+      status = `Winner: ${this.props.step.winnerStatus}`;
+    }
 
     return (
       <div>
@@ -296,6 +344,13 @@ class Game extends React.Component {
                 <div className="d-flex justify-content-center">VS</div>
                 <div id="user2" className="d-flex justify-content-center">
                   Player 2
+                </div>
+                <div className="d-flex justify-content-center player2-photo">
+                  <img
+                    src="https://click4m.madhyamam.com/Appresources/images/man.svg"
+                    alt="Player 2"
+                    id="player2Image"
+                  />
                 </div>
                 <div className="chat-box">{renderChatbox}</div>
               </LoadingOverlay>
@@ -338,6 +393,11 @@ class Game extends React.Component {
               <Link to="/register">
                 <button className="mdb-color" id={loginButtonID} type="button">
                   REGISTER
+                </button>
+              </Link>
+              <Link to="/account">
+                <button id={logoutButtonID} className="mdb-color" type="button">
+                  ACCOUNT
                 </button>
               </Link>
               <button
@@ -386,7 +446,11 @@ class Game extends React.Component {
                 >
                   Undo
                 </button>
-                <button id="opt-button" type="button">
+                <button
+                  onClick={() => this.handlePlayerSurrender()}
+                  id="opt-button"
+                  type="button"
+                >
                   Surrender
                 </button>
               </LoadingOverlay>
@@ -452,6 +516,9 @@ const mapDispatchToProps = dispatch => {
     },
     changeMatchFound: matchFound => {
       dispatch(actions.changeMatchFound(matchFound));
+    },
+    changeWinnerStatus: winnerStatus => {
+      dispatch(actions.changeWinnerStatus(winnerStatus));
     }
   };
 };
