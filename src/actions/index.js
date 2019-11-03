@@ -72,7 +72,7 @@ export const changeWinnerStatus = winnerStatus => {
 function request(user) {
   return { type: 'LOGIN_REQUEST', user };
 }
-function success(user) {
+export function success(user) {
   return { type: 'LOGIN_SUCCESS', user };
 }
 function failure(error) {
@@ -89,7 +89,7 @@ function failureRegister(error) {
   return { type: 'REGISTER_FAILURE', error };
 }
 
-function requestUser() {
+export function requestUser() {
   return { type: 'GET_REQUEST' };
 }
 function successUser(user) {
@@ -183,6 +183,31 @@ const getInfo = async () => {
   }
 };
 
+const updateInfo = async user => {
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+
+  const requestOptions = {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${currentUser.token}`
+    },
+    body: JSON.stringify(user)
+  };
+  try {
+    const response = await fetch(
+      `https://cors-anywhere.herokuapp.com/https://cocaro-api.herokuapp.com/me/update`,
+      requestOptions
+    );
+
+    const updateUser = handleResponse(response);
+
+    return updateUser;
+  } catch (err) {
+    return err;
+  }
+};
+
 const register = async user => {
   const requestOptions = {
     method: 'POST',
@@ -251,6 +276,34 @@ export const getUser = () => {
   };
 };
 
+export const updateUser = user => {
+  return async dispatch => {
+    dispatch(requestUser());
+
+    try {
+      const info = await updateInfo(user);
+      if (info && !info.ok) {
+        dispatch(successUser(info));
+      }
+      if (info.ok) {
+        dispatch(successUser('Successfully updated'));
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+
+        currentUser.user = {
+          ...currentUser.user,
+          name: user.name,
+          email: user.email,
+          image: user.image
+        };
+        localStorage.setItem('user', JSON.stringify(currentUser));
+        dispatch(success(currentUser));
+      }
+    } catch (err) {
+      dispatch(failureUser(err.toString()));
+    }
+  };
+};
+
 export const registerUser = user => {
   return async dispatch => {
     dispatch(requestRegister(user));
@@ -258,8 +311,6 @@ export const registerUser = user => {
     try {
       const newUser = await register(user);
 
-      console.log('newUser');
-      console.log(newUser);
       if (newUser.newUser) {
         dispatch(successRegister());
 

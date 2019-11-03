@@ -1,7 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
-import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import LoadingOverlay from 'react-loading-overlay';
@@ -13,68 +11,102 @@ import {
   MDBCardBody,
   MDBInput,
   MDBBtn,
-  MDBIcon,
   MDBModalFooter
 } from 'mdbreact';
 import * as actions from '../../actions';
+import browserHistory from '../../helpers/history';
+import { storage } from '../../helpers/Firebase';
 
 class Account extends Component {
   constructor(props) {
     super(props);
-    this.props.logout();
     this.state = {
+      name: '',
       email: '',
-      password: ''
+      password: '',
+      image: '',
+      imageFile: null
     };
 
     this.onChangeHandler = this.onChangeHandler.bind(this);
     this.onSubmitHandler = this.onSubmitHandler.bind(this);
+    this.onImageUpload = this.onImageUpload.bind(this);
+  }
+
+  componentWillMount() {
+    const currentUser = this.props.loggingIn.user;
+    if (currentUser && currentUser.token) {
+      // if (currentUser.user.token) {
+      this.setState({
+        name: currentUser.user.name,
+        email: currentUser.user.email,
+        image: currentUser.user.image
+      });
+    } else {
+      browserHistory.push('/');
+    }
   }
 
   onChangeHandler(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value
+    });
+  }
+
+  onImageUpload(e) {
+    if (e.target.files[0]) {
+      const imageFile = e.target.files[0];
+      this.setState({ imageFile });
+    }
   }
 
   onSubmitHandler(e) {
     e.preventDefault();
-    console.log(this.state);
-    const { email, password } = this.state;
-    this.props.login(email, password);
+    const { name, email, password } = this.state;
+    let { image } = this.state;
+    if (image === '') {
+      image = 'https://image.flaticon.com/icons/svg/206/206879.svg';
+      this.setState({ image });
+    }
+
+    this.props.requestUser();
+
+    const { imageFile } = this.state;
+    if (imageFile) {
+      const uploadImage = storage
+        .ref(`images/${imageFile.name}`)
+        .put(imageFile);
+      uploadImage.on(
+        'state_changed',
+        () => {
+          // console.log(snapshot);
+        },
+        error => {
+          console.log(error);
+        },
+        async () => {
+          const imageURL = await storage
+            .ref('images')
+            .child(imageFile.name)
+            .getDownloadURL();
+
+          this.setState({ image: imageURL });
+          this.props.updateUser({ name, email, password, image: imageURL });
+        }
+      );
+    } else {
+      this.props.updateUser({ name, email, password, image });
+    }
   }
 
   render() {
-    const responseGoogle = response => {
-      const userData = {
-        user: {
-          email: response.w3.U3,
-          name: response.w3.ig,
-          picture: response.profileObj.imageUrl
-        },
-        token: response.accessToken
-      };
-
-      this.props.facebookGoogleLogin(userData);
-    };
-
-    const responseFacebook = response => {
-      const userData = {
-        user: {
-          email: response.email,
-          name: response.name,
-          picture: response.picture.data.url
-        },
-        token: response.accessToken
-      };
-
-      this.props.facebookGoogleLogin(userData);
-    };
-
-    const { loggingIn } = this.props.loggingIn;
-    const { user } = this.props.loggingIn;
+    const { loading } = this.props.updating;
+    const { user } = this.props.updating;
     const alertID = user ? '' : 'hidden';
     let message = '';
     if (user) {
-      message = user.message;
+      message = user;
     }
 
     return (
@@ -82,9 +114,9 @@ class Account extends Component {
         <form onSubmit={this.onSubmitHandler}>
           <MDBContainer>
             <MDBRow className="justify-content-center">
-              <MDBCol md="4.5">
+              <MDBCol md="4">
                 <LoadingOverlay
-                  active={loggingIn}
+                  active={loading}
                   spinner
                   text="Loading..."
                   styles={{
@@ -106,16 +138,24 @@ class Account extends Component {
                     <MDBCardBody className="mx-4">
                       <div className="text-center">
                         <h3 className="dark-grey-text mb-5">
-                          <strong>Sign in</strong>
+                          <strong>Update Profile</strong>
                         </h3>
                       </div>
+                      <MDBInput
+                        label="Your name"
+                        group
+                        type="text"
+                        name="name"
+                        validate
+                        value={this.state.name}
+                        onChange={this.onChangeHandler}
+                      />
                       <MDBInput
                         label="Your email"
                         group
                         type="email"
                         validate
                         error="wrong"
-                        success="right"
                         name="email"
                         value={this.state.email}
                         onChange={this.onChangeHandler}
@@ -125,16 +165,29 @@ class Account extends Component {
                         group
                         type="password"
                         validate
-                        containerClass="mb-0"
                         name="password"
+                        containerClass="mb-0"
                         value={this.state.password}
                         onChange={this.onChangeHandler}
                       />
-                      <p className="font-small blue-text d-flex justify-content-end pb-3">
-                        <a href="#!" className="blue-text ml-1">
-                          Forgot Password?
-                        </a>
-                      </p>
+                      <MDBInput
+                        label="Your image URL"
+                        group
+                        type="text"
+                        name="image"
+                        value={this.state.image}
+                        onChange={this.onChangeHandler}
+                      />
+                      <div>Or choose a file</div>
+                      <div className="mt-2 mb-4">
+                        <input
+                          group
+                          type="file"
+                          validate
+                          name="imageUploader"
+                          onChange={this.onImageUpload}
+                        />
+                      </div>
                       <div id={alertID} className="danger-alert">
                         {message}
                       </div>
@@ -145,73 +198,18 @@ class Account extends Component {
                           rounded
                           className="btn-block z-depth-1a rounded-button"
                         >
-                          Sign in
-                        </MDBBtn>
-                      </div>
-
-                      <p className="font-small dark-grey-text text-right d-flex justify-content-center mb-3 pt-2">
-                        or Sign in with:
-                      </p>
-                      <div className="row my-3 d-flex justify-content-center">
-                        <FacebookLogin
-                          appId="618618855339624"
-                          autoLoad={false}
-                          fields="name,email,picture"
-                          callback={responseFacebook}
-                          render={renderProps => (
-                            <MDBBtn
-                              type="button"
-                              color="white"
-                              onClick={renderProps.onClick}
-                              rounded
-                              className="mr-md-3 z-depth-1a rounded-button"
-                            >
-                              <MDBIcon
-                                fab
-                                icon="facebook-f"
-                                className="blue-text text-center"
-                              />
-                            </MDBBtn>
-                          )}
-                        />
-                        <GoogleLogin
-                          clientId="1047564563759-siampppc8dksd4top74slvl0f82sbg91.apps.googleusercontent.com"
-                          render={renderProps => (
-                            <MDBBtn
-                              type="button"
-                              color="white"
-                              onClick={renderProps.onClick}
-                              rounded
-                              className="z-depth-1a rounded-button"
-                            >
-                              <MDBIcon
-                                fab
-                                icon="google-plus-g"
-                                className="blue-text"
-                              />
-                            </MDBBtn>
-                          )}
-                          buttonText="Login"
-                          onSuccess={responseGoogle}
-                          onFailure={responseGoogle}
-                          cookiePolicy="single_host_origin"
-                        />
-
-                        <MDBBtn
-                          type="button"
-                          color="white"
-                          rounded
-                          className="mr-md-3 z-depth-1a rounded-button"
-                        >
-                          <MDBIcon fab icon="twitter" className="blue-text" />
+                          Confirm
                         </MDBBtn>
                       </div>
                     </MDBCardBody>
                     <MDBModalFooter className="mx-5 pt-3 mb-1">
-                      <Link to="/register">
-                        <p className="font-small d-flex justify-content-end blue-text ml-1">
-                          Sign Up
-                        </p>
+                      <Link to="/">
+                        <button
+                          type="button"
+                          className="font-small d-flex justify-content-end blue-text ml-1"
+                        >
+                          Back to Game
+                        </button>
                       </Link>
                     </MDBModalFooter>
                   </MDBCard>
@@ -227,19 +225,23 @@ class Account extends Component {
 
 const mapStateToProps = state => {
   return {
-    history: state.history,
-    step: state.step,
-    loggingIn: state.authentication
+    loggingIn: state.authentication,
+    updating: state.userInfo
   };
 };
 
-const mapActionToProps = {
-  login: actions.loginUser,
-  logout: actions.logoutUser,
-  facebookGoogleLogin: actions.facebookGoogleLogin
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUser: user => {
+      dispatch(actions.updateUser(user));
+    },
+    requestUser: () => {
+      dispatch(actions.requestUser());
+    }
+  };
 };
 
 export default connect(
   mapStateToProps,
-  mapActionToProps
+  mapDispatchToProps
 )(Account);

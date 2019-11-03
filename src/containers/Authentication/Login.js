@@ -48,9 +48,9 @@ class Login extends Component {
         user: {
           email: response.w3.U3,
           name: response.w3.ig,
-          picture: response.profileObj.imageUrl
-        },
-        token: response.accessToken
+          image: response.profileObj.imageUrl
+        }
+        // token: response.accessToken
       };
 
       this.props.facebookGoogleLogin(userData);
@@ -61,9 +61,9 @@ class Login extends Component {
         user: {
           email: response.email,
           name: response.name,
-          picture: response.picture.data.url
-        },
-        token: response.accessToken
+          image: response.picture.data.url
+        }
+        // token: response.accessToken
       };
 
       this.props.facebookGoogleLogin(userData);

@@ -150,18 +150,13 @@ class Game extends React.Component {
       // socket = socketIOClient('https://cocaro-api.herokuapp.com');
       socket = socketIOClient('http://localhost:4000/');
       const currentUser = this.props.user.user;
-      let imageURL =
-        'https://click4m.madhyamam.com/Appresources/images/man.svg';
-      if (currentUser.user.picture) {
-        imageURL = currentUser.user.picture;
-      }
 
       socket.emit(
         'join',
         {
           name: currentUser.user.name,
           email: currentUser.user.email,
-          image: imageURL
+          image: currentUser.user.image
         },
         error => {
           if (error) {
@@ -228,8 +223,7 @@ class Game extends React.Component {
     const currentUser = this.props.user.user;
 
     let greeting = 'Welcome!';
-    let defaultImage =
-      'https://click4m.madhyamam.com/Appresources/images/man.svg';
+    let defaultImage = 'https://image.flaticon.com/icons/svg/206/206865.svg';
     let loginButtonID = 'acc-button';
     let logoutButtonID = 'hidden';
     let renderChatbox;
@@ -242,11 +236,24 @@ class Game extends React.Component {
       matchClassName = '';
 
       socket.on('roomData', ({ users }) => {
-        document.getElementById('user1').innerHTML = `${users[0].name}: (X)`;
-        if (users[1]) {
-          document.getElementById('user2').innerHTML = `${users[1].name}: (O)`;
-          document.getElementById('player2Image').src = users[1].image;
-          this.props.changeMatchFound(true);
+        if (this.props.step.playerTurn) {
+          document.getElementById('user1').innerHTML = `${users[0].name}: (X)`;
+          if (users[1]) {
+            document.getElementById(
+              'user2'
+            ).innerHTML = `${users[1].name}: (O)`;
+            document.getElementById('player2Image').src = users[1].image;
+            this.props.changeMatchFound(true);
+          }
+        } else {
+          document.getElementById('user2').innerHTML = `${users[0].name}: (X)`;
+          if (users[1]) {
+            document.getElementById(
+              'user1'
+            ).innerHTML = `${users[1].name}: (O)`;
+            document.getElementById('player2Image').src = users[0].image;
+            this.props.changeMatchFound(true);
+          }
         }
       });
 
@@ -257,8 +264,8 @@ class Game extends React.Component {
     if (currentUser) {
       const { name } = currentUser.user;
       greeting = `Hi ${name}!`;
-      if (currentUser.user.picture) {
-        defaultImage = currentUser.user.picture;
+      if (currentUser.user.image) {
+        defaultImage = currentUser.user.image;
       }
       loginButtonID = 'hidden';
       logoutButtonID = 'acc-button';
