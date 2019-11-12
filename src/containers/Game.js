@@ -24,8 +24,6 @@ class Game extends React.Component {
     // this.props.getUser();
   }
 
-  componentDidUpdate() {}
-
   submitUndoRequest = () => {
     confirmAlert({
       title: 'Your opponent requests to undo',

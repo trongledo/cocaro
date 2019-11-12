@@ -13,6 +13,7 @@ class Chatbox extends React.Component {
       message: ''
     };
     this.onChangeHandler = this.onChangeHandler.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
   componentDidMount = () => {
@@ -62,54 +63,56 @@ class Chatbox extends React.Component {
 
   render() {
     return (
-      <MDBCard>
-        <div className="scrollable-chat">
-          <MDBListGroup className="list-unstyled pl-3 pr-3">
-            {this.state.messages.map(message => {
-              let className =
-                'anchor message-box d-flex text-left justify-content-start';
-              if (message.email === this.props.currentUser.email) {
-                className =
-                  'anchor message-box d-flex text-left justify-content-end';
-              }
-              return (
-                <div className={className} key={message}>
-                  <ChatMessage
-                    message={message}
-                    currentUser={this.props.currentUser}
-                  />
-                </div>
-              );
-            })}
-            <div
-              style={{ float: 'left', clear: 'both' }}
-              ref={el => {
-                this.messagesEnd = el;
-              }}
+      <form onSubmit={this.sendMessage}>
+        <MDBCard>
+          <div className="scrollable-chat">
+            <MDBListGroup className="list-unstyled pl-3 pr-3">
+              {this.state.messages.map(message => {
+                let className =
+                  'anchor message-box d-flex text-left justify-content-start';
+                if (message.email === this.props.currentUser.email) {
+                  className =
+                    'anchor message-box d-flex text-left justify-content-end';
+                }
+                return (
+                  <div className={className} key={message}>
+                    <ChatMessage
+                      message={message}
+                      currentUser={this.props.currentUser}
+                    />
+                  </div>
+                );
+              })}
+              <div
+                style={{ float: 'left', clear: 'both' }}
+                ref={el => {
+                  this.messagesEnd = el;
+                }}
+              />
+            </MDBListGroup>
+          </div>
+          <div className=" basic-textarea">
+            <textarea
+              className="chat-text form-control"
+              id=""
+              rows="2"
+              placeholder="Type your message here..."
+              name="message"
+              required
+              value={this.state.message}
+              onChange={this.onChangeHandler}
+              onKeyDown={this.enterPressed.bind(this)}
             />
-          </MDBListGroup>
-        </div>
-        <div className=" basic-textarea">
-          <textarea
-            className="chat-text form-control"
-            id=""
-            rows="2"
-            placeholder="Type your message here..."
-            name="message"
-            required
-            value={this.state.message}
-            onChange={this.onChangeHandler}
-            onKeyDown={this.enterPressed.bind(this)}
-          />
-          <MDBBtn
-            size="sm"
-            onClick={() => this.sendMessage()}
-            className="rounded-button float-right"
-          >
-            Send
-          </MDBBtn>
-        </div>
-      </MDBCard>
+            <MDBBtn
+              size="sm"
+              type="submit"
+              className="rounded-button float-right"
+            >
+              Send
+            </MDBBtn>
+          </div>
+        </MDBCard>
+      </form>
     );
   }
 }
