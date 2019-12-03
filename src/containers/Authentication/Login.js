@@ -37,7 +37,6 @@ class Login extends Component {
 
   onSubmitHandler(e) {
     e.preventDefault();
-    console.log(this.state);
     const { email, password } = this.state;
     this.props.login(email, password);
   }
