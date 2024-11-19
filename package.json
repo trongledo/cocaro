@@ -7,7 +7,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-css-only": "^4.3.1",
     "cross-fetch": "^3.0.4",
-    "firebase": "^7.2.3",
+    "firebase": "^10.9.0",
     "gomokuai": "^1.0.2",
     "history": "^4.10.1",
     "mdbreact": "^4.21.1",
